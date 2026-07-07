@@ -11,7 +11,8 @@ import os
 load_dotenv()
 
 SENDER_MAIL = os.getenv("SENDER_MAIL") or "vihansrathore2006@gmail.com"
-SENDER_PASSWORD = os.getenv("SMTP_KEY") or os.getenv("SMTP")
+SENDER_PASSWORD = (os.getenv("SMTP_KEY") or os.getenv("SMTP") or "").replace(" ", "").strip()
+
 
 class DailyNewsEmailService:
     def __init__(self, top_headlines, categorized_news, stock_mentions, ai_summary=""):

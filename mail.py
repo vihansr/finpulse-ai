@@ -9,7 +9,7 @@ load_dotenv()
 class WelcomeEmailSender:
     def __init__(self):
         self.sender_email = os.getenv("SENDER_MAIL") or "vihansrathore2006@gmail.com"
-        self.smtp_key = os.getenv("SMTP_KEY") or os.getenv("SMTP")
+        self.smtp_key = (os.getenv("SMTP_KEY") or os.getenv("SMTP") or "").replace(" ", "").strip()
         self.smtp_server = "smtp.gmail.com"
         self.smtp_port = 587
 

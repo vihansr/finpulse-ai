@@ -29,6 +29,9 @@ jobs:
           SMTP_KEY: ${{ secrets.SMTP_KEY }}
           DB_HOST: ${{ secrets.DB_HOST }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           db_pass: ${{ secrets.db_pass }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
