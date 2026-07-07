@@ -163,48 +163,49 @@ class DailyNewsEmailService:
 
 
 
-scraper = NewsScraper()
-raw_news_list = scraper.get_all_news()
+if __name__ == "__main__":
+    scraper = NewsScraper()
+    raw_news_list = scraper.get_all_news()
 
-# Clean raw news to filter duplicates and boilerplate navigation links
-banned_words = [
-    "hello, login", "my watch list", "my alerts", "my portfolio", "sign-up", 
-    "my profile", "my messages", "price alerts", "follow us on", "terms of use", 
-    "privacy policy", "cookie policy", "logout", "fd interest rates", "fixed deposits"
-]
-news_list = []
-seen = set()
-for headline in raw_news_list:
-    if not headline or not headline.strip():
-        continue
-    cleaned = headline.strip()
-    if cleaned.lower() in seen:
-        continue
-    if any(bw in cleaned.lower() for bw in banned_words):
-        continue
-    # Skip navbar fragments or layout menus
-    if len(cleaned) > 200 and any(w in cleaned.lower() for w in ["login", "portfolio", "account"]):
-        continue
-    news_list.append(cleaned)
-    seen.add(cleaned.lower())
+    # Clean raw news to filter duplicates and boilerplate navigation links
+    banned_words = [
+        "hello, login", "my watch list", "my alerts", "my portfolio", "sign-up", 
+        "my profile", "my messages", "price alerts", "follow us on", "terms of use", 
+        "privacy policy", "cookie policy", "logout", "fd interest rates", "fixed deposits"
+    ]
+    news_list = []
+    seen = set()
+    for headline in raw_news_list:
+        if not headline or not headline.strip():
+            continue
+        cleaned = headline.strip()
+        if cleaned.lower() in seen:
+            continue
+        if any(bw in cleaned.lower() for bw in banned_words):
+            continue
+        # Skip navbar fragments or layout menus
+        if len(cleaned) > 200 and any(w in cleaned.lower() for w in ["login", "portfolio", "account"]):
+            continue
+        news_list.append(cleaned)
+        seen.add(cleaned.lower())
 
-print("[INFO] Running Unified Structured LLM Extraction pipeline...")
-processor = UnifiedNewsProcessor()
-extracted_data = processor.process(news_list)
+    print("[INFO] Running Unified Structured LLM Extraction pipeline...")
+    processor = UnifiedNewsProcessor()
+    extracted_data = processor.process(news_list)
 
-top_headlines = extracted_data.get("top_headlines", news_list[:10])
-categorized_news = extracted_data.get("categorized_news", {})
-stock_mentions = extracted_data.get("stock_mentions", [])
-ai_summary = extracted_data.get("ai_summary", "")
+    top_headlines = extracted_data.get("top_headlines", news_list[:10])
+    categorized_news = extracted_data.get("categorized_news", {})
+    stock_mentions = extracted_data.get("stock_mentions", [])
+    ai_summary = extracted_data.get("ai_summary", "")
 
-if not ai_summary:
-    summarizer = NewsSummarizer()
-    ai_summary = summarizer.summarize(top_headlines, categorized_news)
+    if not ai_summary:
+        summarizer = NewsSummarizer()
+        ai_summary = summarizer.summarize(top_headlines, categorized_news)
 
-service = DailyNewsEmailService(
-    top_headlines=top_headlines,
-    categorized_news=categorized_news,
-    stock_mentions=stock_mentions,
-    ai_summary=ai_summary
-)
-service.send_all()
+    service = DailyNewsEmailService(
+        top_headlines=top_headlines,
+        categorized_news=categorized_news,
+        stock_mentions=stock_mentions,
+        ai_summary=ai_summary
+    )
+    service.send_all()

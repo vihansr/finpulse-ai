@@ -13,22 +13,22 @@ The application serves two primary workflows:
 
 ```mermaid
 graph TD
-    subgraph Web Frontend [Streamlit UI - app.py]
+    subgraph "Web Frontend (Streamlit UI - app.py)"
         UI[Subscriber UI / Demo Preview]
         Form[Email Subscribe Form]
     end
 
-    subgraph Storage [Local SQLite Database - database.py]
+    subgraph "Storage (Local SQLite Database - database.py)"
         DB[(subscribers.db)]
     end
 
-    subgraph Intelligence Pipeline [Automated Cron Job - subscription.py]
+    subgraph "Intelligence Pipeline (Automated Cron Job - subscription.py)"
         Scraper[NewsScraper<br/>news.py]
         LLM[UnifiedNewsProcessor<br/>Groq Llama 3 AI]
         Digest[DailyNewsEmailService<br/>HTML Generator]
     end
 
-    subgraph External Sources & APIs
+    subgraph "External Sources & APIs"
         MC[Moneycontrol / ET / BS / Mint / CNBC]
         Groq[Groq AI Cloud API]
         SMTP[Gmail SMTP Server]

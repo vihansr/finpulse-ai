@@ -12,7 +12,7 @@ class UnifiedNewsProcessor:
     Replaces separate BERT/RoBERTa/DeBERTa models with a single structured JSON schema API call.
     """
     def __init__(self, model_name="llama-3.3-70b-versatile"):
-        self.api_key = os.getenv("key") or os.getenv("GROQ_API_KEY")
+        self.api_key = os.getenv("GROQ_API_KEY")
         self.model_name = model_name
         self.url = "https://api.groq.com/openai/v1/chat/completions"
 
