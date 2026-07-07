@@ -13,6 +13,10 @@ def get_cloud_db_params():
     except ImportError:
         return None
 
+    db_url = os.getenv("DATABASE_URL") or os.getenv("SUPABASE_DB_URL")
+    if db_url and "postgresql://" in db_url:
+        return {"dsn": db_url}
+
     db_host = os.getenv("DB_HOST")
     if not db_host:
         supabase_url = os.getenv("SUPABASE_URL", "")
@@ -228,7 +232,8 @@ def get_active_db_info():
             import psycopg2
             conn = psycopg2.connect(**cloud_params)
             conn.close()
-            return {"type": "PostgreSQL (Supabase Cloud - TCP)", "host": cloud_params["host"], "status": "Connected via TCP (Port 5432)"}
+            host_display = cloud_params.get("host") or cloud_params.get("dsn", "").split("@")[-1].split("/")[0]
+            return {"type": "PostgreSQL (Supabase Cloud - TCP)", "host": host_display, "status": "Connected via TCP (Port 5432)"}
         except Exception as e:
             # Check HTTPS REST API
             rest_url, rest_key = get_supabase_rest_config()
