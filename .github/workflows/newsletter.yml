@@ -28,5 +28,10 @@ jobs:
           SENDER_MAIL: ${{ secrets.SENDER_MAIL }}
           SMTP_KEY: ${{ secrets.SMTP_KEY }}
           DB_HOST: ${{ secrets.DB_HOST }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          db_pass: ${{ secrets.db_pass }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
           python subscription.py
+

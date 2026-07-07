@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 from datetime import datetime, timedelta
 from model import UnifiedNewsProcessor, NewsCategorizer, HeadlineSelector, StockMentionMapper, NewsSummarizer
 from news import NewsScraper
-from database import get_all_subscribers
+from database import get_all_subscribers, create_table
 from dotenv import load_dotenv
 import os
 
@@ -21,7 +21,14 @@ class DailyNewsEmailService:
         self.ai_summary = ai_summary
 
     def fetch_subscribers(self):
-        return get_all_subscribers()
+        # Ensure cloud/local database tables are initialized and synced before fetching
+        create_table()
+        subscribers = get_all_subscribers()
+        # Clean, deduplicate, and validate email formats
+        valid_subs = sorted(list(set([e.strip().lower() for e in subscribers if e and "@" in e and "." in e])))
+        print(f"[INFO] Fetched {len(valid_subs)} active subscribers from database: {valid_subs}")
+        return valid_subs
+
 
     def generate_html(self):
         date_str = (datetime.now() + timedelta(days=1)).strftime("%A, %d %B %Y")
@@ -121,11 +128,10 @@ class DailyNewsEmailService:
     def send_all(self):
         recipients = self.fetch_subscribers()
         if not recipients:
+            print("[WARNING] No subscribers found in database. Using default fallback email.")
             recipients = ['vihansrathore2006@gmail.com']
-        if not recipients:
-            print("[ERROR] No subscribers to send.")
-            return
-
+        
+        print(f"[INFO] Preparing daily digest broadcast for {len(recipients)} recipients...")
         html_content = self.generate_html()
 
         if not SENDER_MAIL or not SENDER_PASSWORD:
@@ -141,25 +147,55 @@ class DailyNewsEmailService:
 
         sent_count = 0
 
-        for email in recipients:
+        # Use a single shared SMTP connection for broadcasting to avoid rate limits and connection overhead
+        try:
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+                server.login(SENDER_MAIL, SENDER_PASSWORD)
+                for email in recipients:
+                    try:
+                        msg = MIMEMultipart("alternative")
+                        msg["Subject"] = f"Your Daily Financial Digest — {datetime.now().strftime('%d %b')}"
+                        msg["From"] = SENDER_MAIL
+                        msg["To"] = email
+                        msg.attach(MIMEText(html_content, "html"))
+
+                        server.sendmail(SENDER_MAIL, email, msg.as_string())
+                        print(f"[SUCCESS] Sent daily newsletter to {email}")
+                        sent_count += 1
+                    except Exception as e:
+                        print(f"[ERROR] Failed sending to {email}: {e}")
+                        try:
+                            server.connect("smtp.gmail.com", 465)
+                            server.login(SENDER_MAIL, SENDER_PASSWORD)
+                            server.sendmail(SENDER_MAIL, email, msg.as_string())
+                            print(f"[SUCCESS] Re-sent daily newsletter to {email}")
+                            sent_count += 1
+                        except Exception as retry_err:
+                            print(f"[ERROR] Re-try failed for {email}: {retry_err}")
+        except Exception as smtp_err:
+            print(f"[CRITICAL ERROR] SMTP SSL Connection failed ({smtp_err}). Attempting TLS fallback on port 587...")
             try:
-                msg = MIMEMultipart("alternative")
-                msg["Subject"] = "Your Daily Financial Digest"
-                msg["From"] = SENDER_MAIL
-                msg["To"] = email
-                msg.attach(MIMEText(html_content, "html"))
-
-                with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+                with smtplib.SMTP("smtp.gmail.com", 587) as server:
+                    server.ehlo()
+                    server.starttls()
+                    server.ehlo()
                     server.login(SENDER_MAIL, SENDER_PASSWORD)
-                    server.sendmail(SENDER_MAIL, email, msg.as_string())
+                    for email in recipients:
+                        try:
+                            msg = MIMEMultipart("alternative")
+                            msg["Subject"] = f"Your Daily Financial Digest — {datetime.now().strftime('%d %b')}"
+                            msg["From"] = SENDER_MAIL
+                            msg["To"] = email
+                            msg.attach(MIMEText(html_content, "html"))
+                            server.sendmail(SENDER_MAIL, email, msg.as_string())
+                            print(f"[SUCCESS] Sent (TLS) to {email}")
+                            sent_count += 1
+                        except Exception as e2:
+                            print(f"[ERROR] TLS send failed for {email}: {e2}")
+            except Exception as tls_err:
+                print(f"[FATAL ERROR] All SMTP delivery methods failed: {tls_err}")
 
-                print(f"[SUCCESS] Sent to {email}")
-                sent_count += 1
-
-            except Exception as e:
-                print(f"[ERROR] Failed for {email}: {e}")
-
-        print(f"[INFO] Email sent to {sent_count} subscribers.")
+        print(f"[INFO] Daily newsletter broadcast completed: Sent to {sent_count}/{len(recipients)} subscribers.")
 
 
 
