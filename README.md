@@ -1,4 +1,4 @@
-# 📈 FinPulse AI — Automated Financial Intelligence & Newsletter Service
+# FinPulse AI — Automated Financial Intelligence & Newsletter Service
 
 FinPulse AI is a modern, high-speed financial intelligence platform designed to scrape, analyze, and deliver high-signal daily financial summaries directly to users. 
 
@@ -6,7 +6,7 @@ By consolidating multiple local PyTorch/Hugging Face deep learning models into a
 
 ---
 
-## 🚀 Key Core Features
+## Key Core Features
 
 ### 1. **Interactive Subscriber Dashboard (Streamlit)**
 * Sleek, modern card-based UI that handles user onboarding.
@@ -31,7 +31,7 @@ By consolidating multiple local PyTorch/Hugging Face deep learning models into a
 
 ---
 
-## 🛠️ Tech Stack & Dependencies
+## Tech Stack & Dependencies
 
 * **Frontend**: Streamlit
 * **AI Model Engine**: Groq Cloud API (`llama-3.3-70b-versatile`)
@@ -42,7 +42,7 @@ By consolidating multiple local PyTorch/Hugging Face deep learning models into a
 
 ---
 
-## 📂 Repository Layout
+## Repository Layout
 
 ```
 finpulse-ai/
@@ -63,7 +63,7 @@ finpulse-ai/
 
 ---
 
-## ⚡ Quick Start & Installation
+## Quick Start & Installation
 
 ### Prerequisite Setup
 1. **Python Installation**: Ensure you are running Python 3.10 or higher.
@@ -107,7 +107,7 @@ python subscription.py
 
 ---
 
-## 🏛️ System Design Overview
+## System Design Overview
 
 Below is the conceptual framework showing how user registration and scheduled broadcasts flow through the system:
 
