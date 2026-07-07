@@ -1,4 +1,4 @@
-# FinPulse AI — Automated Financial Intelligence & Newsletter Service
+# 📈 FinPulse AI — Automated Financial Intelligence & Newsletter Service
 
 FinPulse AI is a modern, high-speed financial intelligence platform designed to scrape, analyze, and deliver high-signal daily financial summaries directly to users. 
 
@@ -6,7 +6,7 @@ By consolidating multiple local PyTorch/Hugging Face deep learning models into a
 
 ---
 
-## Key Core Features
+##  Key Core Features
 
 ### 1. **Interactive Subscriber Dashboard (Streamlit)**
 * Sleek, modern card-based UI that handles user onboarding.
@@ -31,7 +31,7 @@ By consolidating multiple local PyTorch/Hugging Face deep learning models into a
 
 ---
 
-## Tech Stack & Dependencies
+##  Tech Stack & Dependencies
 
 * **Frontend**: Streamlit
 * **AI Model Engine**: Groq Cloud API (`llama-3.3-70b-versatile`)
@@ -42,7 +42,7 @@ By consolidating multiple local PyTorch/Hugging Face deep learning models into a
 
 ---
 
-## Repository Layout
+##  Repository Layout
 
 ```
 finpulse-ai/
@@ -63,7 +63,7 @@ finpulse-ai/
 
 ---
 
-## Quick Start & Installation
+##  Quick Start & Installation
 
 ### Prerequisite Setup
 1. **Python Installation**: Ensure you are running Python 3.10 or higher.
@@ -107,19 +107,19 @@ python subscription.py
 
 ---
 
-## System Design Overview
+##  System Design Overview
 
 Below is the conceptual framework showing how user registration and scheduled broadcasts flow through the system:
 
 ```mermaid
 graph TD
-    subgraph Streamlit Dashboard
+    subgraph "Streamlit Dashboard"
         A[Subscriber Form] -->|Insert Subscriber| B[(SQLite DB)]
         A -->|SMTP Welcome Email| C[Subscriber Inbox]
         A -->|SMTP Registration Alert| D[Admin Inbox]
     end
     
-    subgraph Scheduled Action (5:00 AM IST)
+    subgraph "Scheduled Action (5:00 AM IST)"
         E[GitHub Actions Cron] -->|Execute| F[subscription.py]
         F -->|Scrape HTML| G[Scraper Engine]
         G -->|Raw Headlines| H[Groq Llama 3 API]
@@ -131,7 +131,7 @@ graph TD
 
 ---
 
-## 📈 Scalability & Roadmap
+##  Scalability & Roadmap
 For enterprise-grade scaling, the repository is ready to integrate the following upgrades:
 * **Serverless Postgres**: Switch SQLite to cloud-based serverless storage (Neon.tech / Supabase) for horizontally scaled container deployments.
 * **Resend/SendGrid Integration**: Transition from SMTP relays to a dedicated Email Service Provider (ESP) to guarantee 99.9% deliverability.
