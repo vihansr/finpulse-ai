@@ -1,4 +1,4 @@
-# 📈 FinPulse AI — Automated Financial Intelligence & Newsletter Service
+# FinPulse AI — Automated Financial Intelligence & Newsletter Service
 
 FinPulse AI is a modern, high-speed financial intelligence platform designed to scrape, analyze, and deliver high-signal daily financial summaries directly to users. 
 
